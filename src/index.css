@@ -1,0 +1,126 @@
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f0f2f5;
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.app-header, .app-footer {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+h1 {
+    margin: 0.2em 0;
+    font-size: 2rem;
+}
+
+p.description {
+    margin-bottom: 1em;
+    color: #333;
+}
+
+p.progress-text {
+    margin: 0.5em 0;
+    font-size: 1.1rem;
+}
+
+.main-content {
+    flex-grow: 1;
+    min-height: 0;
+    width: 100%;
+    display: grid;
+    place-items: center;
+}
+
+.map-container {
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    max-width: 60vh;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.map-container img,
+.map-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#mapImage { z-index: 1; }
+#pathCanvas { z-index: 2; }
+#overlayImage { z-index: 3; }
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+#pathSlider {
+    width: 100%;
+    max-width: 500px;
+}
+
+#recordButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap; 
+}
+
+#recordButton:hover {
+    background-color: #e9e9e9;
+}
+
+#recordButton.recording {
+    background-color: #ff4747;
+    color: white;
+    border-color: #ff4747;
+}
+
+p small {
+    color: #666;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+@media (max-height: 600px), (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    .App {
+        padding: 0.5rem;
+    }
+    p.progress-text, p.description {
+        font-size: 0.9rem;
+    }
+}
+
