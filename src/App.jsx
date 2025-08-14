@@ -205,7 +205,7 @@ function App() {
             </header>
             <main className="main-content">
                 <div className="map-container">
-                    <img id="mapImage" src="./neighbourhood.png" width="1024" height="1024" alt="Map of coastal neighbourhood" />
+                    <img id="mapImage" src="./map.png" width="1024" height="1024" alt="Map" />
                     <canvas
                         ref={canvasRef}
                         id="pathCanvas"
@@ -216,7 +216,7 @@ function App() {
                         onMouseUp={handleMouseUp}
                         onMouseLeave={handleMouseUp}
                     />
-                    {showOverlay&&<img ref={overlayRef} id="overlayImage" src="./neighbourhood_overlay.png" width="1024" height="1024" alt="Foreground elements" />}
+                    {showOverlay&&<img ref={overlayRef} id="overlayImage" src="./map_overlay.png" width="1024" height="1024" alt="Foreground elements" />}
                 </div>
             <div className="app-footer">
                 <p className="progress-text">
