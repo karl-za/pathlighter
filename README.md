@@ -1,12 +1,46 @@
-# React + Vite
+# Running the project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Step 1: Clone the repository
 
-Currently, two official plugins are available:
+First, you need to download the project files from GitHub to your local machine.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Go to the GitHub repository page https://github.com/karl-za/pathlighter.git
 
-## Expanding the ESLint configuration
+Click the green "Code" button.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Copy the URL provided in the box (usually the HTTPS URL).
+
+Open your terminal or command prompt.
+
+Navigate to the directory where you want to save the project.
+
+Type `git clone` followed by the URL you copied and press Enter.
+
+For example:
+
+```git clone https://github.com/karl-za/pathlighter.git```
+
+This command will create a local copy of the repository in a new folder.
+
+## Step 2: Install dependencies
+
+A Vite + React app has various dependencies (libraries and packages) that need to be installed before the app can run.
+
+Navigate into the project directory you just cloned by using the cd command. For example, cd pathlighter
+
+Run the following command to install all the dependencies listed in the project's package.json file:
+
+```npm install```
+
+This process may take a few minutes as it downloads all the necessary packages and saves them in a node_modules folder.
+
+## Step 3: Start the development server
+
+Once the dependencies are installed, you can start the development server to run the app.
+
+In the same terminal window, run the following command:
+
+```npm run dev```
+
+This command will start the Vite development server, and you'll see a local URL (e.g. `http://localhost:5173/pathlighter`) in your terminal. You can open this URL in your web browser to see the running application.
+
