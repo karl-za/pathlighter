@@ -6,7 +6,7 @@ function App() {
     const [isDragging, setIsDragging] = useState(false);
     const [newPath, setNewPath] = useState([]);
     const [allPaths, setAllPaths] = useState([]);
-    const [lights, setLights] = useState([]);
+    const [events, setEvents] = useState([]);
     const [recordButtonText, setRecordButtonText] = useState('Start New Path');
 
     const [title, setTitle] = useState('');
@@ -21,7 +21,8 @@ function App() {
     const [isAdmin, setIsAdmin] = useState(false);
 
 
-    const canvasRef = useRef(null);
+    const canvasTopRef = useRef(null);
+    const canvasBottomRef = useRef(null);
     const overlayRef = useRef(null);
     const animationFrameId = useRef();
 
@@ -33,12 +34,12 @@ function App() {
 
         Promise.all([
             fetch('paths.json').then(res => res.json()),
-            fetch('lights.json').then(res => res.json()),
+            fetch('events.json').then(res => res.json()),
             fetch(`config.json?v=${new Date().getTime()}`).then(res => res.json())
-        ]).then(([loadedPaths, loadedLights, configData]) => {
+        ]).then(([loadedPaths, loadedEvents, configData]) => {
             setAllPaths(loadedPaths);
-            setLights(loadedLights);
-            console.log(`Successfully loaded ${loadedPaths.length} paths and ${loadedLights.length} lights.`);
+            setEvents(loadedEvents);
+            console.log(`Successfully loaded ${loadedPaths.length} paths and ${loadedEvents.length} events.`);
 
             setTitle(configData.title);
             setDescription(configData.description);
@@ -73,51 +74,60 @@ function App() {
 
     useEffect(() => {
         drawCanvas();
-    }, [sliderValue, allPaths, lights, isRecording, newPath]); // Added dependencies
+    }, [sliderValue, allPaths, events, isRecording, newPath]); // Added dependencies
 
-    const getCanvasContext = () => {
-        const canvas = canvasRef.current;
+    const getCanvasTopContext = () => {
+        const canvas = canvasTopRef.current;
+        return canvas ? canvas.getContext('2d') : null;
+    };
+    const getCanvasBottomContext = () => {
+        const canvas = canvasBottomRef.current;
         return canvas ? canvas.getContext('2d') : null;
     };
 
     const drawCanvas = () => {
-        const ctx = getCanvasContext();
-        if (!ctx) return;
+        const ctxBottom = getCanvasBottomContext();
+        if (!ctxBottom) return;
+        const ctxTop = getCanvasTopContext();
 
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctxBottom.clearRect(0, 0, ctxBottom.canvas.width, ctxBottom.canvas.height);
+        ctxTop.clearRect(0, 0, ctxTop.canvas.width, ctxTop.canvas.height);
 
         if (isRecording) {
-            drawRecordingFeedback(ctx);
+            drawRecordingFeedback(ctxBottom);
             return;
         }
 
         const progress = sliderValue / 100;
-        ctx.strokeStyle = 'gold';
-        ctx.lineWidth = 15;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
 
-        allPaths.forEach(currentPath => {
+        allPaths.forEach(path => {
+            const ctx = path.aboveOverlay ? ctxTop : ctxBottom;
+            ctx.strokeStyle = path.strokeStyle;
+            ctx.lineWidth = path.lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.beginPath();
-            if (currentPath.length > 0) {
-                ctx.moveTo(currentPath[0].x, currentPath[0].y);
-                const segments = (currentPath.length - 1) * progress;
+            const coords = path.coords;
+            if (coords.length > 0) {
+                ctx.moveTo(coords[0].x, coords[0].y);
+                const segments = (coords.length - 1) * progress;
                 for (let i = 0; i < segments; i++) {
-                    if (currentPath[i + 1]) ctx.lineTo(currentPath[i + 1].x, currentPath[i + 1].y);
+                    if (coords[i + 1]) ctx.lineTo(coords[i + 1].x, coords[i + 1].y);
                 }
                 ctx.stroke();
             }
         });
 
-        lights.forEach(light => {
-            if (sliderValue >= light.percentage) {
-                const glow = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, light.radius);
+        events.forEach(event => {
+            const ctx = event.aboveOverlay ? ctxTop : ctxBottom;
+            if (sliderValue >= event.percentage) {
+                const glow = ctx.createRadialGradient(event.x, event.y, 0, event.x, event.y, event.radius);
                 glow.addColorStop(0, 'rgba(255, 255, 0, 1)');
                 glow.addColorStop(0.5, 'rgba(255, 255, 0, 0.7)');
                 glow.addColorStop(1, 'rgba(255, 255, 0, 0)');
                 ctx.fillStyle = glow;
                 ctx.beginPath();
-                ctx.arc(light.x, light.y, light.radius, 0, 2 * Math.PI);
+                ctx.arc(event.x, event.y, event.radius, 0, 2 * Math.PI);
                 ctx.fill();
             }
         });
@@ -177,7 +187,7 @@ function App() {
     };
 
     const getMousePos = (e) => {
-        const rect = canvasRef.current.getBoundingClientRect();
+        const rect = canvasTopRef.current.getBoundingClientRect();
         return {
             x: Math.round(e.clientX - rect.left),
             y: Math.round(e.clientY - rect.top)
@@ -207,8 +217,8 @@ function App() {
                 <div className="map-container">
                     <img id="mapImage" src="./map.png" width="1024" height="1024" alt="Map" />
                     <canvas
-                        ref={canvasRef}
-                        id="pathCanvas"
+                        ref={canvasBottomRef}
+                        id="pathCanvasBottom"
                         width="1024"
                         height="1024"
                         onMouseDown={handleMouseDown}
@@ -217,6 +227,16 @@ function App() {
                         onMouseLeave={handleMouseUp}
                     />
                     {showOverlay&&<img ref={overlayRef} id="overlayImage" src="./map_overlay.png" width="1024" height="1024" alt="Foreground elements" />}
+                    <canvas
+                        ref={canvasTopRef}
+                        id="pathCanvasTop"
+                        width="1024"
+                        height="1024"
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                    />
                 </div>
             <div className="app-footer">
                 <p className="progress-text">

@@ -3,7 +3,8 @@
     "x": 848,
     "y": 78,
     "radius": 60,
-    "percentage": 100
+    "percentage": 100,
+    "aboveOverlay": true
   }
 ]
 

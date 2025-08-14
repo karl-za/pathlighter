@@ -71,8 +71,9 @@ p.progress-text {
 }
 
 #mapImage { z-index: 1; }
-#pathCanvas { z-index: 2; }
+#pathCanvasBottom { z-index: 2; }
 #overlayImage { z-index: 3; }
+#pathCanvasTop { z-index: 4; }
 
 .controls {
     display: flex;
