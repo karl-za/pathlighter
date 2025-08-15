@@ -88,6 +88,13 @@ p.progress-text {
     max-width: 500px;
 }
 
+p small {
+    color: #666;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+
 #recordButton {
     padding: 8px 16px;
     border-radius: 6px;
@@ -107,11 +114,18 @@ p.progress-text {
     border-color: #ff4747;
 }
 
-p small {
-    color: #666;
-    display: block;
-    margin-top: 0.5rem;
+#recorderMapImage { z-index: 1; }
+#recorderPathCanvas { z-index: 2; }
+#recorderControls { z-index: 3; }
+
+.path-record-controls,
+.path-record-map-container img,
+.path-record-map-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
+
 
 @media (max-height: 600px), (max-width: 480px) {
     h1 {
