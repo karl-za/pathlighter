@@ -1,6 +1,16 @@
 https://github.com/karl-za/pathlighter
 
-# Running the project
+# Running / deploying the vanilla project
+
+Copy the contents of /vanilla to your webserver.
+
+Possibly admin.php will work for you; if not, update the contents of config.json (via ftp) as your fundraising progresses.
+
+Customize `index.html`, `index.css` and `path_tracer.js` for your needs.
+
+In `path_tracer.js`, in `initialize()`, the progress message is built and currently only logged to console. You can use it to update a progress message on your page somewhere.
+
+# Running the React project
 
 ## Step 1: Clone the repository
 
