@@ -1,0 +1,28 @@
+html, body {
+    padding: 2rem;
+    overflow: auto;
+}
+
+.map-container {
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    max-width: 80vh;
+}
+
+.map-container img,
+.map-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#mapImage { z-index: 1; }
+#pathCanvasBottom { z-index: 2; }
+#overlayImage { z-index: 3; }
+#pathCanvasTop { z-index: 4; }
+
+
+

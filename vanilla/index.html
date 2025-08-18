@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Funraiser</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+    <div class="map-container">
+        <img 
+            id="mapImage" 
+            src="./map.png" 
+            width="1024" 
+            height="1024" 
+        />
+        <canvas
+            id="pathCanvasBottom"
+            width="1024"
+            height="1024"
+        ></canvas>
+        <img 
+            id="overlayImage" 
+            src="./map_overlay.png" 
+            width="1024" 
+            height="1024" 
+        />
+        <canvas
+            id="pathCanvasTop"
+            width="1024"
+            height="1024"
+        ></canvas>
+    </div>
+    <script src="paths.js"></script>
+    <script src="events.js"></script>
+    <script src="path_tracer.js"></script>
+</body>
+</html>
