@@ -93,7 +93,7 @@ function App() {
             console.log("All assets loaded, starting animation.");
             let percentage = (config.current / config.goal) * 100;
             percentage = Math.min(percentage, 100);
-            animateSlider(percentage, 3000);
+            animateSlider(percentage, 15000);
         }
     }, [isDataLoaded, isMapImageLoaded, isOverlayImageLoaded, config, animateSlider]);
 
@@ -111,6 +111,47 @@ function App() {
         return canvas ? canvas.getContext('2d') : null;
     };
 
+    function drawHalo(ctx, x, y, t, color) {
+        // Define a base radius and a fluctuating radius for the halo
+        const baseRadius = 30;
+        
+        // Use a combination of a sine wave and a subtle random factor to make the radius
+        // vary in a non-strict, "organic" way.
+        // The Math.sin() adds a continuous pulse, while the small random
+        // component adds a slight, non-repeating wobble.
+        const radiusFluctuation = 10 * Math.sin(t * 15) + (5 * Math.sin(t * 20));
+        const haloRadius = baseRadius + radiusFluctuation;
+
+        // Create a radial gradient for the fading effect
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, haloRadius);
+
+        //gradient.addColorStop(0, color);
+        //gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.7)');
+        gradient.addColorStop(0.5, 'rgba(255, 255,255, 0.3)');
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+
+
+        // Draw the halo
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, haloRadius, 0, 2 * Math.PI);
+        ctx.fill();
+        }
+
+    function getShimmeringColor(t) {
+        // Define the start and end hue values for the blue/purple range
+        const startHue = 290; // Blue
+        const endHue = 320;   // Purple
+
+        // Use a smooth wave function to map 't' from [0, 1] to the hue range
+        const hue = startHue + (endHue - startHue) * ((Math.sin(t * 3*Math.PI) + 1) / 2);
+
+        // Return the HSL color string
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
     const drawCanvas = () => {
         const ctxBottom = getCanvasBottomContext();
         if (!ctxBottom) return;
@@ -125,6 +166,7 @@ function App() {
             if (path.disabled)
                 return;
             const ctx = path.aboveOverlay ? ctxTop : ctxBottom;
+            
             ctx.lineWidth = path.lineWidth;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -139,6 +181,19 @@ function App() {
                     }
                     ctx.strokeStyle = path.trail;
                     ctx.stroke();
+                }
+                if (path.bespoke) {
+                    ctx.lineWidth = 15;
+                    const segmentEnd = Math.floor((coords.length - 1) *(sliderValue)/100);
+                    ctx.beginPath();
+                    ctx.moveTo(coords[segmentEnd].x, coords[segmentEnd].y);
+                    ctx.lineTo(coords[segmentEnd].x+1, coords[segmentEnd].y+1);
+                    const c = getShimmeringColor(progress);
+                    ctx.strokeStyle = c;
+                    ctx.stroke();
+                    if (segmentEnd<coords.length-5)
+                    drawHalo(ctxTop,coords[segmentEnd].x, coords[segmentEnd].y,progress*path.seq,'blue')
+                    return;
                 }
                 let segmentStart = 0;
                 if (path.tail) segmentStart = Math.floor((coords.length - 1) *(sliderValue-path.tail)/100);
