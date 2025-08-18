@@ -110,18 +110,22 @@ function animateProgress(targetValue, duration) {
 }
 
 async function initialize() {
-	/*
-    const response = await fetch(`config.json?v=${new Date().getTime()}`);
-    if (!response.ok) {
-        throw new Error('Could not load fundraiser data.');
-    }
-    const config = await response.json();    
-    console.log(config)
-	*/
-	const config = {
-        "goal": 15000,
-        "current": 3000,
-        "secondsToAnimate": 10
+    // load the config data (goal, current amount, secondsToAnimate)
+    let useHardcodedConfig = false;
+    let config;
+    if (useHardcodedConfig) {
+        config = {
+            "goal": 15000,
+            "current": 3000,
+            "secondsToAnimate": 10
+        }
+    } else {
+        const response = await fetch(`config.json?v=${new Date().getTime()}`);
+        if (!response.ok) {
+            throw new Error('Could not load fundraiser data.');
+        }
+        config = await response.json();    
+        console.log(config)
     }
 
     // build the progress message

@@ -1,10 +1,9 @@
 <?php
 $configFile = 'config.json';
 $config = [
-    'title' => 'My Pathlighter',
-    'description' => 'Help us reach our goal!',
     'goal' => 5000,
     'current' => 0,
+    'secondsToAnimate' => 10
 ];
 
 if (file_exists($configFile)) {
@@ -13,16 +12,11 @@ if (file_exists($configFile)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $config['title'] = htmlspecialchars($_POST['title']);
-    $config['description'] = htmlspecialchars($_POST['description']);
-    $config['postamble'] = htmlspecialchars($_POST['postamble']);
     $config['goal'] = (float) $_POST['goal'];
     $config['current'] = (float) $_POST['current'];
-
+    $config['secondsToAnimate'] = (float) $_POST['secondsToAnimate'];
     $json = json_encode($config, JSON_PRETTY_PRINT);
-
     file_put_contents($configFile, $json);
-
     $message = "Settings saved successfully!";
 }
 ?>
@@ -53,18 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form action="admin.php" method="POST">
             <div class="mb-4">
-                <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
-                <input type="text" id="title" name="title" value="<?php echo $config['title']; ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-            </div>
-            <div class="mb-4">
-                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                <textarea id="description" name="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required><?php echo $config['description']; ?></textarea>
-            </div>
-            <div class="mb-4">
-                <label for="postamble" class="block text-gray-700 text-sm font-bold mb-2">Postamble</label>
-                <textarea id="postamble" name="postamble" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required><?php echo $config['postamble']; ?></textarea>
-            </div>
-            <div class="mb-4">
                 <label for="goal" class="block text-gray-700 text-sm font-bold mb-2">Goal Amount ($)</label>
                 <input type="number" step="0.01" id="goal" name="goal" value="<?php echo $config['goal']; ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
@@ -72,19 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="current" class="block text-gray-700 text-sm font-bold mb-2">Current Amount Raised ($)</label>
                 <input type="number" step="0.01" id="current" name="current" value="<?php echo $config['current']; ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
+            <div class="mb-6">
+                <label for="secondsToAnimate" class="block text-gray-700 text-sm font-bold mb-2">Seconds To Animate (from start to current amount raised)</label>
+                <input type="number" step="0.01" id="secondsToAnimate" name="secondsToAnimate" value="<?php echo $config['secondsToAnimate']; ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Save Settings
                 </button>
             </div>
-            <div>
-                <a href="./" target="_blank" class="align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 text-justify">
-                    Public Page
-                </a>
-                <a href="./?admin=1" target="_blank" class="align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Public Page + Admin Controls
-                </a>
-            <div>                
         </form>
     </div>
 </body>
